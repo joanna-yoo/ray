@@ -7,7 +7,7 @@ import os
 import signal
 import sys
 import time
-import traceback
+/mport traceback
 from dataclasses import asdict
 from typing import Any, Callable, Dict, Optional, Union
 
@@ -394,16 +394,21 @@ class Monitor:
                     _internal_kv_put(
                         ray_constants.DEBUG_AUTOSCALING_STATUS, as_json, overwrite=True
                     )
-            except Exception:
+            except Exception as e:
                 # By default, do not exit the monitor on failure.
                 if self.retry_on_failure:
                     logger.exception("Monitor: Execution exception. Trying again...")
                 else:
-                    raise
+		    logger.exception(''.join(traceback.format_exception(e)))
+                    raise e
 
             # Wait for a autoscaler update interval before processing the next
             # round of messages.
-            time.sleep(AUTOSCALER_UPDATE_INTERVAL_S)
+	    try:
+                time.sleep(AUTOSCALER_UPDATE_INTERVAL_S)
+
+	    except Exception as e:
+                logger.exception(f'Failed sleeping for {AUTOSCALER_UPDATE_INTERVAL_S}')
 
     def update_event_summary(self):
         """Report the current size of the cluster.
