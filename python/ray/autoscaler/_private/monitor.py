@@ -399,15 +399,14 @@ class Monitor:
                 if self.retry_on_failure:
                     logger.exception("Monitor: Execution exception. Trying again...")
                 else:
-		    logger.exception(''.join(traceback.format_exception(e)))
+		            logger.exception(''.join(traceback.format_exception(e)))
                     raise e
 
             # Wait for a autoscaler update interval before processing the next
             # round of messages.
-	    try:
+	        try:
                 time.sleep(AUTOSCALER_UPDATE_INTERVAL_S)
-
-	    except Exception as e:
+	        except Exception as e:
                 logger.exception(f'Failed sleeping for {AUTOSCALER_UPDATE_INTERVAL_S}')
 
     def update_event_summary(self):
